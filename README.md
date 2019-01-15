@@ -12,9 +12,11 @@ Python に関しての備忘録
 ## regular_re.py
 正規表現の簡単なメモ。
 ## search-twitter_oauth.py
-OAuthライブラリを使用してのTwitterデータ取得。
+OAuthライブラリを使用してのTwitterデータ取得。<br>
+※2019年1月時点で動くかは不明。
 ## search-twitter_twitter.py
-twitterライブラリを使用してのTwitterデータ取得。
+twitterライブラリを使用してのTwitterデータ取得。<br>
+※2019年1月時点で動くかは不明。
 ## tf-idf_mecab_base.py
 mecabを利用してのTF-IDF実装。サンプル。<br>
 ※整理したほうが良いかも。

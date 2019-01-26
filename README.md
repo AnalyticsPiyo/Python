@@ -1,5 +1,8 @@
 # Python
 Python に関しての備忘録
+## HelloAnalytics.py
+GoogleAnalyticsのデータをAPI経由で取得するときのテンプレートファイル。<br>
+※ほぼ公式通り
 ## get-html-source.py
 多分、国会図書館のAPIを叩き、特定の本を取得。<br>
 大学院のレポート作成時データ収集のために作成。

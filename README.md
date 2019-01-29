@@ -3,7 +3,7 @@ about Python memo
 ## googleanalytics-python
 GoogleAnalyticsのデータをAPI経由で取得するときのテンプレートファイル。<br>
 - クラス化
-- 返り値をデータフレーム型
+- 返り値をデータフレーム型<br>
 などに変更するがあまりいい感じにつくれてはいない。
 ## HelloAnalytics.py
 GoogleAnalyticsのデータをAPI経由で取得するときのテンプレートファイル。<br>

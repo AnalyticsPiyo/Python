@@ -1,5 +1,10 @@
 # Python
-Python に関しての備忘録
+about Python memo
+## googleanalytics-python
+GoogleAnalyticsのデータをAPI経由で取得するときのテンプレートファイル。<br>
+- クラス化
+- 返り値をデータフレーム型
+などに変更するがあまりいい感じにつくれてはいない。
 ## HelloAnalytics.py
 GoogleAnalyticsのデータをAPI経由で取得するときのテンプレートファイル。<br>
 ※ほぼ公式通り

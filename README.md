@@ -1,5 +1,5 @@
 # Python
-about Python memo
+Memo about Python 
 ## googleanalytics-python
 GoogleAnalyticsのデータをAPI経由で取得するときのテンプレートファイル。<br>
 - クラス化

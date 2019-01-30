@@ -1,5 +1,6 @@
 """Hello Analytics Reporting API V4."""
-# https://developers.google.com/analytics/devguides/reporting/core/v4/basics?hl=ja
+# å…¬å¼ï¼šhttps://developers.google.com/analytics/devguides/reporting/core/v4/basics?hl=ja
+# å‚è€ƒï¼šhttps://note.nkmk.me/python-google-analytics-reporting-api-download/
 
 import argparse
 
@@ -15,16 +16,22 @@ import pandas as pd
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 DISCOVERY_URI = ('https://analyticsreporting.googleapis.com/$discovery/rest')
-CLIENT_SECRETS_PATH = './client_secrets.json' # Path to client_secrets.json file.
+CLIENT_SECRETS_PATH = './modules/client_secrets.json' # Path to client_secrets.json file.
 
 class Analytics():
     def __init__(self, viewid):
         self.viewid = viewid
         self.initialize_analyticsreporting()
 
+        self.start_date = ""
+        self.end_date = ""
+        self.metrics = list()
+        self.dimensions = list()
+        self.orders = list()
+        self.df = pd.DataFrame()
+
     def initialize_analyticsreporting(self):
         """Initializes the analyticsreporting service object.
-
         Returns:
           analytics an authorized analyticsreporting service object.
         """
@@ -54,32 +61,54 @@ class Analytics():
 
         return self.analytics
 
-    def get_report(self, start_date, end_date, metrics, dimensions, orders, columns):
+    def get_report(self, s_date, e_date, m_list, d_list = list(), o_dict = dict()):
+        self.start_date = s_date
+        self.end_date = e_date
+        self.metrics = [{'expression': 'ga:' + m} for m in m_list]
+        
+        if not d_list:
+            self.columns = m_list
+        else:
+            self.dimensions = [{'name': 'ga:' + d} for d in d_list]
+            self.columns = d_list + m_list 
+        
+        # orderã®ãƒ‡ãƒ¼ã‚¿ä½œæˆ
+        if not o_dict:
+            for k, v in o_dict.items():
+                tmp_dict = dict()
+                tmp_dict["fieldName"] = k
+                tmp_dict["sortOrder"] = v
+                self.order.append(tmp_dict)
+        
+        self.excute_query()
+        self.print_response()
+        
+        return self.df
+
+    def excute_query(self):
         # Use the Analytics Service Object to query the Analytics Reporting API V4.
         self.response =  self.analytics.reports().batchGet(
             body={
               'reportRequests': [
               {
                 'viewId': self.viewid,
-                'dateRanges': [{'startDate': start_date, 'endDate': end_date}],
-                'metrics': metrics,
-                'dimensions': dimensions,
-                'orderBys': orders
+                'dateRanges': [{'startDate': self.start_date, 'endDate': self.end_date}],
+                'metrics': self.metrics,
+                'dimensions': self.dimensions,
+                'orderBys': self.orders,
               }]
             }
         ).execute()
         
-        df = self.print_response(self.response, columns)
-        return df
-
-    def print_response(self, response, columns):
+    def print_response(self):
         """Parses and prints the Analytics Reporting API V4 response"""
-        tmp = list()
-        a = columns
-        # ‘æ2ˆø”‚Ínull‚¾‚Á‚½‚ÌƒfƒtƒHƒ‹ƒg’l
-        # pprint.pprint(response.get('reports')[0].get('data').get('rows'))
-        for i in response.get('reports')[0].get('data').get('rows'):
-            adr_dict = dict(zip(a, i.get('dimensions') + i.get('metrics')[0].get('values')))
-            tmp.append(adr_dict)
-        df = pd.io.json.json_normalize(tmp)
-        return df
+        date_list = list()
+
+        # ç¬¬2å¼•æ•°ã¯nullã ã£ãŸæ™‚ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤
+        for i in self.response.get('reports')[0].get('data').get('rows'):
+            if not i.get('dimensions'):
+                adr_dict = dict(zip(self.columns, i.get('metrics')[0].get('values')))
+            else:
+                adr_dict = dict(zip(self.columns, i.get('dimensions') + i.get('metrics')[0].get('values')))
+            date_list.append(adr_dict)
+        self.df = pd.io.json.json_normalize(date_list)
